@@ -1,5 +1,5 @@
 {
-  "name": "eslint-plugin-testing-library",
+  "name": "@max-revops/eslint-plugin-testing-library-revops",
   "version": "0.0.0-semantically-released",
   "description": "ESLint rules for Testing Library",
   "keywords": [
