@@ -17,11 +17,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/testing-library/eslint-plugin-testing-library"
+    "url": "https://github.com/max-revops/eslint-plugin-testing-library-revops"
   },
-  "homepage": "https://github.com/testing-library/eslint-plugin-testing-library",
+  "homepage": "https://github.com/max-revops/eslint-plugin-testing-library-revops",
   "bugs": {
-    "url": "https://github.com/testing-library/eslint-plugin-testing-library/issues"
+    "url": "https://github.com/max-revops/eslint-plugin-testing-library-revops/issues"
   },
   "main": "index.js",
   "scripts": {
