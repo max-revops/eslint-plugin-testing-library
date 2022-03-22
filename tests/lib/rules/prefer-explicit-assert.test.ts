@@ -39,12 +39,12 @@ ruleTester.run(RULE_NAME, rule, {
       code: `expect(screen.get${queryMethod}('foo')).toBeDefined()`,
     })),
     ...COMBINED_QUERIES_METHODS.map((queryMethod) => ({
-      code: `expect(getBy${queryMethod}('foo').bar).toBeInTheDocument()`,
+      code: `expect(get${queryMethod}('foo').bar).toBeInTheDocument()`,
     })),
     ...COMBINED_QUERIES_METHODS.map((queryMethod) => ({
       code: `
-        async () => { 
-          await waitForElement(() => get${queryMethod}('foo')) 
+        async () => {
+          await waitForElement(() => get${queryMethod}('foo'))
         }
       `,
     })),
@@ -139,7 +139,88 @@ ruleTester.run(RULE_NAME, rule, {
       code: `const a = { foo: get${queryMethod}('bar') }`,
     })),
     ...COMBINED_QUERIES_METHODS.map((queryMethod) => ({
-      code: `query${queryMethod}("foo")`,
+      code: `() => { return query${queryMethod}('foo') }`,
+    })),
+    ...COMBINED_QUERIES_METHODS.map((queryMethod) => ({
+      code: `function bar() { return query${queryMethod}('foo') }`,
+    })),
+    ...COMBINED_QUERIES_METHODS.map((queryMethod) => ({
+      code: `const { query${queryMethod} } = render()`,
+    })),
+    ...COMBINED_QUERIES_METHODS.map((queryMethod) => ({
+      code: `it('test', () => { const { query${queryMethod} } = render() })`,
+    })),
+    ...COMBINED_QUERIES_METHODS.map((queryMethod) => ({
+      code: `it('test', () => { const [ query${queryMethod} ] = render() })`,
+    })),
+    ...COMBINED_QUERIES_METHODS.map((queryMethod) => ({
+      code: `const a = [ query${queryMethod}('foo') ]`,
+    })),
+    ...COMBINED_QUERIES_METHODS.map((queryMethod) => ({
+      code: `const a = { foo: query${queryMethod}('bar') }`,
+    })),
+    ...COMBINED_QUERIES_METHODS.map((queryMethod) => ({
+      code: `query${queryMethod}('Hello')`,
+      settings: {
+        'testing-library/utils-module': 'test-utils',
+      },
+    })),
+    ...COMBINED_QUERIES_METHODS.map((queryMethod) => ({
+      code: `query${queryMethod}`,
+    })),
+    ...COMBINED_QUERIES_METHODS.map((queryMethod) => ({
+      code: `
+        const utils = render()
+        utils.query${queryMethod}
+      `,
+    })),
+    ...COMBINED_QUERIES_METHODS.map((queryMethod) => ({
+      code: `screen.query${queryMethod}`,
+    })),
+    ...COMBINED_QUERIES_METHODS.map((queryMethod) => ({
+      code: `expect(query${queryMethod}('foo')).toBeDefined()`,
+    })),
+    ...COMBINED_QUERIES_METHODS.map((queryMethod) => ({
+      code: `
+        const utils = render()
+        expect(utils.query${queryMethod}('foo')).toBeDefined()
+      `,
+    })),
+    ...COMBINED_QUERIES_METHODS.map((queryMethod) => ({
+      code: `expect(screen.query${queryMethod}('foo')).toBeDefined()`,
+    })),
+    ...COMBINED_QUERIES_METHODS.map((queryMethod) => ({
+      code: `expect(query${queryMethod}('foo').bar).toBeInTheDocument()`,
+    })),
+    ...COMBINED_QUERIES_METHODS.map((queryMethod) => ({
+      code: `
+        async () => {
+          await waitForElement(() => query${queryMethod}('foo'))
+        }
+      `,
+    })),
+    ...COMBINED_QUERIES_METHODS.map((queryMethod) => ({
+      code: `fireEvent.click(query${queryMethod}('bar'));`,
+    })),
+    ...COMBINED_QUERIES_METHODS.map((queryMethod) => ({
+      code: `const quxElement = query${queryMethod}('qux')`,
+    })),
+    ...COMBINED_QUERIES_METHODS.map((queryMethod) => ({
+      code: `
+      async () => {
+        expect(query${queryMethod}('qux')).toBeInTheDocument();
+      }`,
+    })),
+    ...COMBINED_QUERIES_METHODS.map((queryMethod) => ({
+      code: `
+        async () => {
+          query${queryMethod}('foo')
+        }`,
+      options: [
+        {
+          includeQueryQueries: false,
+        },
+      ],
     })),
     ...COMBINED_QUERIES_METHODS.map((queryMethod) => ({
       code: `
@@ -338,6 +419,66 @@ ruleTester.run(RULE_NAME, rule, {
         },
       ],
     },
+    ...COMBINED_QUERIES_METHODS.map(
+      (queryMethod) =>
+        ({
+          code: `query${queryMethod}('foo')`,
+          errors: [
+            {
+              messageId: 'preferExplicitAssert',
+              data: {
+                queryType: 'queryBy*',
+              },
+            },
+          ],
+        } as const)
+    ),
+    ...COMBINED_QUERIES_METHODS.map(
+      (queryMethod) =>
+        ({
+          code: `screen.query${queryMethod}('foo')`,
+          errors: [
+            {
+              messageId: 'preferExplicitAssert',
+              line: 1,
+              column: 8,
+              data: {
+                queryType: 'queryBy*',
+              },
+            },
+          ],
+        } as const)
+    ),
+    ...COMBINED_QUERIES_METHODS.map(
+      (queryMethod) =>
+        ({
+          code: `
+        () => {
+          query${queryMethod}('foo')
+          doSomething()
+
+          query${queryMethod}('bar')
+          const quxElement = query${queryMethod}('qux')
+        }
+      `,
+          errors: [
+            {
+              messageId: 'preferExplicitAssert',
+              line: 3,
+              data: {
+                queryType: 'queryBy*',
+              },
+            },
+            {
+              messageId: 'preferExplicitAssert',
+              line: 6,
+              data: {
+                queryType: 'queryBy*',
+              },
+            },
+          ],
+        } as const)
+    ),
     ...COMBINED_QUERIES_METHODS.map(
       (queryMethod) =>
         ({

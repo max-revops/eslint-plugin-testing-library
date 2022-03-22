@@ -1,4 +1,4 @@
-import { TSESTree, ASTUtils } from '@typescript-eslint/utils';
+import { ASTUtils, TSESTree } from '@typescript-eslint/utils';
 
 import { createTestingLibraryRule } from '../create-testing-library-rule';
 import {
@@ -6,7 +6,7 @@ import {
   isCallExpression,
   isMemberExpression,
 } from '../node-utils';
-import { PRESENCE_MATCHERS, ABSENCE_MATCHERS } from '../utils';
+import { ABSENCE_MATCHERS, PRESENCE_MATCHERS } from '../utils';
 
 export const RULE_NAME = 'prefer-explicit-assert';
 export type MessageIds =
@@ -16,6 +16,7 @@ type Options = [
   {
     assertion?: string;
     includeFindQueries?: boolean;
+    includeQueryQueries?: boolean;
   }
 ];
 
@@ -92,15 +93,17 @@ export default createTestingLibraryRule<Options, MessageIds>({
             enum: PRESENCE_MATCHERS,
           },
           includeFindQueries: { type: 'boolean' },
+          includeQueryQueries: { type: 'boolean' },
         },
       },
     ],
   },
-  defaultOptions: [{ includeFindQueries: true }],
+  defaultOptions: [{ includeFindQueries: true, includeQueryQueries: true }],
   create(context, [options], helpers) {
-    const { assertion, includeFindQueries } = options;
+    const { assertion, includeFindQueries, includeQueryQueries } = options;
     const getQueryCalls: TSESTree.Identifier[] = [];
     const findQueryCalls: TSESTree.Identifier[] = [];
+    const queryQueryCalls: TSESTree.Identifier[] = [];
 
     return {
       'CallExpression Identifier'(node: TSESTree.Identifier) {
@@ -110,6 +113,10 @@ export default createTestingLibraryRule<Options, MessageIds>({
 
         if (helpers.isFindQueryVariant(node)) {
           findQueryCalls.push(node);
+        }
+
+        if (helpers.isQueryQueryVariant(node)) {
+          queryQueryCalls.push(node);
         }
       },
       'Program:exit'() {
@@ -131,6 +138,29 @@ export default createTestingLibraryRule<Options, MessageIds>({
               messageId: 'preferExplicitAssert',
               data: {
                 queryType: 'findBy*',
+              },
+            });
+          });
+        }
+
+        if (includeQueryQueries) {
+          queryQueryCalls.forEach((queryCall) => {
+            const memberExpression = isMemberExpression(queryCall.parent)
+              ? queryCall.parent
+              : queryCall;
+
+            if (
+              isVariableDeclaration(queryCall) ||
+              !isAtTopLevel(memberExpression)
+            ) {
+              return;
+            }
+
+            context.report({
+              node: queryCall,
+              messageId: 'preferExplicitAssert',
+              data: {
+                queryType: 'queryBy*',
               },
             });
           });
