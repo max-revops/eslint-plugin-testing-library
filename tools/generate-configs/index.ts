@@ -1,13 +1,13 @@
 import type { LinterConfigRules } from '../../lib/configs';
 import rules from '../../lib/rules';
 import {
-  SUPPORTED_TESTING_FRAMEWORKS,
   SupportedTestingFramework,
+  SUPPORTED_TESTING_FRAMEWORKS,
 } from '../../lib/utils';
 
 import { LinterConfig, writeConfig } from './utils';
 
-const RULE_NAME_PREFIX = 'testing-library/';
+const RULE_NAME_PREFIX = '@max-revops/testing-library/';
 
 const getRecommendedRulesForTestingFramework = (
   framework: SupportedTestingFramework
@@ -33,7 +33,7 @@ const getRecommendedRulesForTestingFramework = (
 
 SUPPORTED_TESTING_FRAMEWORKS.forEach((framework) => {
   const specificFrameworkConfig: LinterConfig = {
-    plugins: ['testing-library'],
+    plugins: ['@max-revops/testing-library'],
     rules: getRecommendedRulesForTestingFramework(framework),
   };
 

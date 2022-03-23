@@ -67,7 +67,8 @@ it('should export configs that refer to actual rules', () => {
     ]);
 
   allConfigRules.forEach((rule) => {
-    const ruleNamePrefix = 'testing-library/';
+    console.log(rule);
+    const ruleNamePrefix = '@max-revops/testing-library/';
     const ruleName = rule.slice(ruleNamePrefix.length);
 
     expect(rule.startsWith(ruleNamePrefix)).toBe(true);

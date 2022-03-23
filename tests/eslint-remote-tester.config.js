@@ -1,6 +1,6 @@
 /* eslint-disable  @typescript-eslint/no-var-requires  */
 /* eslint-disable import/no-extraneous-dependencies */
-const { rules } = require('eslint-plugin-testing-library');
+const { rules } = require('@max-revops/eslint-plugin-testing-library');
 const {
   getRepositories,
   getPathIgnorePattern,
@@ -26,18 +26,18 @@ module.exports = {
         jsx: true,
       },
     },
-    plugins: ['testing-library'],
+    plugins: ['@max-revops/testing-library'],
     rules: {
       ...Object.keys(rules).reduce(
         (all, rule) => ({
           ...all,
-          [`testing-library/${rule}`]: 'error',
+          [`@max-revops/testing-library/${rule}`]: 'error',
         }),
         {}
       ),
 
       // Rules with required options without default values
-      'testing-library/consistent-data-testid': [
+      '@max-revops/testing-library/consistent-data-testid': [
         'error',
         { testIdPattern: '^{fileName}(__([A-Z]+[a-z]_?)+)_$' },
       ],
