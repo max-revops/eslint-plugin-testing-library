@@ -1,5 +1,5 @@
 {
-  "name": "@max-revops/eslint-plugin-testing-library-revops",
+  "name": "@max-revops/eslint-plugin-testing-library",
   "version": "0.0.0-semantically-released",
   "description": "ESLint rules for Testing Library",
   "keywords": [
@@ -17,11 +17,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/max-revops/eslint-plugin-testing-library-revops"
+    "url": "https://github.com/max-revops/eslint-plugin-testing-library"
   },
-  "homepage": "https://github.com/max-revops/eslint-plugin-testing-library-revops",
+  "homepage": "https://github.com/max-revops/eslint-plugin-testing-library",
   "bugs": {
-    "url": "https://github.com/max-revops/eslint-plugin-testing-library-revops/issues"
+    "url": "https://github.com/max-revops/eslint-plugin-testing-library/issues"
   },
   "main": "index.js",
   "scripts": {
